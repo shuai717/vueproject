@@ -4,5 +4,6 @@ import routes from '../routes/index'
 Vue.use(vueRouter);
 
 export default new vueRouter({
-    routes
+    routes,
+    linkActiveClass:'active'
 })

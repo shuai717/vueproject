@@ -1,3 +1,5 @@
 export default{
-    seller:'haha'
+    seller:{},
+    goods:[],
+    ratings:[]
 }

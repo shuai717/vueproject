@@ -6,13 +6,23 @@ export default {
             method:"get",
             toast:true
         },
+        getGoods:{
+            url:"/api/goods",
+            method:"get",
+            toast:true
+        },
+        getRatings:{
+            url:"/api/ratings",
+            method:"get",
+            toast:true
+        },
         
     },
     
     timeout:3000,
     hooks:{
         beforeReq(){},
-        afterReqSuccess(data){data.xxx="模块级别的处理";},
+        afterReqSuccess(){},
         afterReqFail(){},
       }
 }
