@@ -39,6 +39,7 @@
       <img :src="bgImg">
     </div>
     
+    <transition name='mask'>
       <div class="mask " ref='mask' v-show='maskIsShow'>
               <div class="main-warp" >
                   <div class="main">
@@ -69,7 +70,8 @@
               <div class="footer">
                   <i class="layout-close" @click='maskIsShow=false'></i>
               </div>
-    </div>
+     </div>
+    </transition>
 </div>
 </template>
 
@@ -142,7 +144,7 @@ import start from '../v-srarts/v-starts'
 
 <style lang="stylus" rel="stylesheet/stylus">
     @import '../../common/stylus/mixin.styl'
-    
+    @import '../../common/stylus/transition.styl'
     #top
       position relative
       height 134px

@@ -10,12 +10,12 @@
             </ul>
         </div>
         <div class="goodWrap" ref="goodWrap">
-            <ul class="goodList">
+            <ul class="goodList" ref='good'>
                 <li class="good" v-for="(good,index) in goods" :key="index">
                     <h2 class="goodName">{{good.name}}</h2>
                     <ul class="foodlist">
                         <li class="food" v-for="(food,index) in good.foods" :key="index">
-                            
+                            <v-food :food='food'></v-food>
                         </li>
                     </ul>
                 </li>
@@ -25,28 +25,48 @@
 </template>
 
 <script >
+import Vue from 'vue'
 import {mapActions,mapState} from 'vuex'
 import BScroll from 'better-scroll'
 import icon from '../components/v-icon/icon'
+import food from '../components/v-food/food'
 const ACTSETGOODS='actSetGoods'
   export default {
     data () {
       return {
-        currentIndex:0
+        currentIndex:0,
+        goodScrollList:[],
+        scrollY:0,
+        goodScrollObj:null,
       }
     },
     components: {
-      "v-icon":icon
+      "v-icon":icon,
+      "v-food":food
     },
     methods:{
-     ...mapActions([ACTSETGOODS])
+     ...mapActions([ACTSETGOODS]),
+     getLiScrollYList(){
+         Vue.nextTick( () =>{
+            // DOM 更新了
+            this.$refs.good.children.forEach((item)=>{
+                this.goodScrollList.push(item.offsetTop)
+            })
+            })
+         
+     }
      
     },
      async mounted(){
       let resulte=await this.$http.seller.getGoods()
       this[ACTSETGOODS](resulte.data);
        new BScroll(this.$refs.typeWrap)
-       new BScroll(this.$refs.goodWrap)
+       this.goodScrollObj=new BScroll(this.$refs.goodWrap,{probeType:3})
+       this.goodScrollObj.on("scroll",({x,y})=>{
+                        this.scrollY = Math.abs(y)
+                    })
+       this.getLiScrollYList()
+       
     },
     computed:{
       ...mapState(["goods"])
