@@ -4,8 +4,24 @@
     transition 0.5s all !important
 .mask-enter-to
     opacity 1 !important
-.mask-leave
+
 .mask-leave-active
     transition 0.5s all !important
 .mask-leave-to
     opacity 0 !important
+
+
+.contorlRemove-enter
+    opacity 0 !important
+    transform translate3d(24px,0,0) rotate(-360deg) !important
+.contorlRemove-enter-active
+    transition 0.5s all !important
+.contorlRemove-enter-to
+    opacity 1 !important
+    transform translate3d(0,0,0) rotate(0deg) !important
+
+.contorlRemove-leave-active
+    transition 0.5s all !important
+.contorlRemove-leave-to
+    opacity 0 !important
+    transform translate3d(24px,0,0) rotate(360deg) !important

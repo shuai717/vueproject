@@ -41,11 +41,10 @@
         },
         onscore:{
             get(){
-                return this.$store.state.seller.score;
+                return this.score;
             }
         },
         starts(){
-             console.log(this.onscore)
         if(this.onscore!==undefined){
             if(this.onscore<0.5){
             this.startArry=['off','off','off','off','off']
@@ -93,49 +92,49 @@
                         width 10px
                         height 10px
                         bg-img(star24_on)
-                        margin-right 10px
+                        margin-right 3px
                     &.half
                         width 10px
                         height 10px
                         bg-img(star24_half)
-                        margin-right 10px
+                        margin-right 3px
                     &.off
                         width 10px
                         height 10px
                         bg-img(star24_off)
-                        margin-right 10px
+                        margin-right 3px
                 &.b
                     &.on
                         width 15px
                         height 15px
                         bg-img(star36_on)
-                        margin-right 15px
+                        margin-right 6px
                     &.half
                         width 15px
                         height 15px
                         bg-img(star36_half)
-                        margin-right 15px
+                        margin-right 6px
                     &.off
                         width 15px
                         height 15px
                         bg-img(star36_off)
-                        margin-right 15px
+                        margin-right 6px
                 &.c
                     &.on
                         width 20px
                         height 19px
                         bg-img(star48_on)
-                        margin-right 20px
+                        margin-right 12px
                     &.half
                         width 20px
                         height 19px
                         bg-img(star48_half)
-                        margin-right 20px
+                        margin-right 12px
                     &.off
                         width 20px
                         height 19px
                         bg-img(star48_off)
-                        margin-right 20px
+                        margin-right 12px
 
 
 

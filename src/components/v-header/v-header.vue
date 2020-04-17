@@ -80,7 +80,7 @@
 import icon from '../v-icon/icon'
 import line from '../v-line/v-line'
 import list from '../v-list/v-list'
-import start from '../v-srarts/v-starts'
+import start from '../v-starts/v-starts'
   export default {
     data () {
       return {
@@ -156,7 +156,7 @@ import start from '../v-srarts/v-starts'
         position fixed 
         left 0
         top 0
-        z-index 9
+        z-index 9999
         width 100%
         height 100%
         background-color rgba(7,17,27,0.8)

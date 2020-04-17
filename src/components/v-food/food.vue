@@ -15,10 +15,12 @@
             <s class="four-2" v-show='food.oldPrice!==""'>￥{{food.oldPrice}}</s>
         </div>
     </div>
+    <v-contorl :food='food' :index1='index1' :index2='index2' class='foodcon'></v-contorl>
 </div>
 </template>
 
 <script >
+import contorl from '../v-contorl/contorl'
   export default {
     data () {
       return {
@@ -26,10 +28,13 @@
       }
     },
     components: {
-
+        "v-contorl":contorl
     },
     props:{
-        food:Object
+        food:Object,
+        index:Number,
+        index1:Number,
+        index2:Number,
     }
   }
 </script>
@@ -37,8 +42,13 @@
 <style lang='stylus'>
 @import '../../common/stylus/mixin.styl'
     .foodproduct
+        position relative
         display flex
         justify-content left
+        .foodcon
+            position absolute 
+            right 18px
+            bottom 0 
         .left
             width 64px
             height 64px

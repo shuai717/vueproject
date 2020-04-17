@@ -18,21 +18,23 @@
         </router-link>
       </div>
     </div>
-    <v-car></v-car>
-    <router-view></router-view>
+   
+   <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 import header from './components/v-header/v-header.vue'
-import car from './components/v-car/car'
+
 import {mapActions} from 'vuex'
 const ACTSETSELLER='actSetSeller'
 export default {
   name: 'App',
   components:{
     "v-header":header,
-    "v-car":car
+    
   },
   methods:{
     ...mapActions([ACTSETSELLER])

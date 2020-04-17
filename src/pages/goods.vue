@@ -2,8 +2,8 @@
 <div class="goods">
         <div class="typeWrap" ref="typeWrap">
             <ul class="typeList">
-                <li class="type" :class="{active:index===currentIndex}"
-                    v-for="(good,index) in goods" :key="index" @click='currentIndex=index'>
+                <li class="type" :class="{active:currentIndex===index}"
+                    v-for="(good,index) in goods" :key="index" @click='rightTo(index)' ref='goodtypes' :a='1===leftTo'>
                     <v-icon class="icon" v-show="good.type >= 0" size="3" :type="good.type"></v-icon>
                     <span>{{good.name}}</span>
                 </li>
@@ -11,16 +11,19 @@
         </div>
         <div class="goodWrap" ref="goodWrap">
             <ul class="goodList" ref='good'>
-                <li class="good" v-for="(good,index) in goods" :key="index">
+                <li class="good" v-for="(good,index1) in goods" :key="index1">
                     <h2 class="goodName">{{good.name}}</h2>
                     <ul class="foodlist">
-                        <li class="food" v-for="(food,index) in good.foods" :key="index">
-                            <v-food :food='food'></v-food>
+                        <li class="food" v-for="(food,index2) in good.foods" :key="index2">
+                            <v-food :food='food' :index1='index1' :index2='index2'></v-food>
+                            
                         </li>
                     </ul>
+                    
                 </li>
             </ul>
         </div>
+         <v-car :goods='goods'></v-car>
     </div>
 </template>
 
@@ -30,6 +33,7 @@ import {mapActions,mapState} from 'vuex'
 import BScroll from 'better-scroll'
 import icon from '../components/v-icon/icon'
 import food from '../components/v-food/food'
+import car from '../components/v-car/car'
 const ACTSETGOODS='actSetGoods'
   export default {
     data () {
@@ -38,11 +42,14 @@ const ACTSETGOODS='actSetGoods'
         goodScrollList:[],
         scrollY:0,
         goodScrollObj:null,
+        typeScrollObj:null,
       }
     },
     components: {
       "v-icon":icon,
-      "v-food":food
+      "v-food":food,
+      "v-car":car
+      
     },
     methods:{
      ...mapActions([ACTSETGOODS]),
@@ -53,23 +60,76 @@ const ACTSETGOODS='actSetGoods'
                 this.goodScrollList.push(item.offsetTop)
             })
             })
-         
-     }
-     
+     },
+    rightTo(index){
+        this.currentIndex=index;
+        this.goodScrollObj.scrollTo(0,-this.goodScrollList[index],0.3)
+        console.log(this.goodScrollList[index])
+    },
+        
     },
      async mounted(){
-      let resulte=await this.$http.seller.getGoods()
-      this[ACTSETGOODS](resulte.data);
-       new BScroll(this.$refs.typeWrap)
-       this.goodScrollObj=new BScroll(this.$refs.goodWrap,{probeType:3})
-       this.goodScrollObj.on("scroll",({x,y})=>{
-                        this.scrollY = Math.abs(y)
-                    })
-       this.getLiScrollYList()
-       
+        let resulte=await this.$http.seller.getGoods()
+        this[ACTSETGOODS](resulte.data);
+        this.typeScrollObj=new BScroll(this.$refs.typeWrap)
+        this.goodScrollObj=new BScroll(this.$refs.goodWrap,{probeType:3})
+        this.goodScrollObj.on("scroll",({x,y})=>{
+                            this.scrollY = Math.abs(y)
+                        })
+        this.getLiScrollYList()
+        this.$bus.$on('add',({index1,index2})=>{
+                    
+                    if(this.goods[index1].foods[index2].count){
+                        this.goods[index1].foods[index2].count++;
+                    } else{
+                        this.$set(this.goods[index1].foods[index2],"count",1)
+                    }  
+                }),
+        this.$bus.$on('remove',({index1,index2})=>{
+                    
+                   if(this.goods[index1].foods[index2].count>1){
+                       this.goods[index1].foods[index2].count--;
+                   }
+                   else if(this.goods[index1].foods[index2].count==1){
+                       this.$delete(this.goods[index1].foods[index2],"count")
+                   }
+
+                }),
+        this.$bus.$on('clear',()=>{
+                    
+                   this.goods.forEach((item1)=>{
+                       item1.foods.forEach((item2)=>{
+                       if(item2.count){
+                           this.$delete(item2,"count")
+                       }
+                   })
+                   })
+                })
     },
     computed:{
-      ...mapState(["goods"])
+      ...mapState(["goods"]),
+     leftTo(){
+         this.goodScrollList.find((item,index)=>{
+             if(this.goodScrollList[index+1]){
+                 if(item<=this.scrollY&&this.goodScrollList[index+1]>this.scrollY){
+                     if(this.currentIndex!=index){
+                         this.typeScrollObj.scrollToElement(this.$refs.goodtypes[index],0.3)
+                     }
+                  this.currentIndex=index;
+                  
+              }
+             }else{
+                 if(item<=this.scrollY){
+                     if(this.currentIndex!=index){
+                         this.typeScrollObj.scrollToElement(this.$refs.goodtypes[index],0.3)
+                     }
+                    this.currentIndex=index;
+                    
+                 }
+             }
+              
+          })
+     }
     }
   }
 </script>
@@ -115,6 +175,7 @@ const ACTSETGOODS='actSetGoods'
             overflow hidden
             .goodList
                 .good
+                   
                     .goodName
                         height 26px
                         line-height 26px
@@ -126,6 +187,7 @@ const ACTSETGOODS='actSetGoods'
                         color rgba(147,153,159,1)
                     .foodlist
                         .food
+                            
                             one-px(rgba(7,17,27,.1))
                             padding 18px
                             &:after

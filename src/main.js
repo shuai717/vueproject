@@ -7,8 +7,9 @@ import router from './router/index'
 import store from './store/index'
 //5. 引用字体图标
 import "./common/stylus/style.styl"
+import './filter/index'
 Vue.prototype.$http=http;
-
+Vue.prototype.$bus=new Vue()
 Vue.config.productionTip = false
 
 new Vue({

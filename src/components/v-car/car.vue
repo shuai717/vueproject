@@ -3,52 +3,124 @@
         <div class="cart">
             <div class="left" style="color: white" >
                 <div class="icon">
-                    <div class="logo active" >
+                    <div class="logo" @click='maskShow=!maskShow' :class='sumCount>0?"active":""'>
                         <i class="layout-shopping_cart"></i>
                     </div>
-                    <span class="qipao">1</span>
+                    <span class="qipao" :class='sumCount>0?"active":""'>{{sumCount}}</span>
                 </div>
-                <div class="totalPrice active" >
-                    <span>¥30</span>
+                <div class="totalPrice "  :class='sumCount>0?"active":""'>
+                    <span>¥{{sumMoeny}}</span>
                 </div>
-                <div class="deliveryPrice ">
-                    <span>另需配送费¥4元</span>
+                <div class="deliveryPrice " @click='maskShow=!maskShow'>
+                    <span>另需配送费¥{{deliveryPrice}}元</span>
                 </div>
             </div>
-            <div class="right active" >
-                <span>20起送</span>
+            <div class="right " @click='maskShow=!maskShow' :class='sumMoeny>=minPrice?"active":""'>
+                <span v-if='sumMoeny===0'>{{minPrice}}元起送</span>
+                <span v-else-if='sumMoeny>0&&sumMoeny<minPrice'>还差{{minPrice-sumMoeny}}元起送</span>
+                <span v-else-if='sumMoeny>=minPrice'>点击结算</span>
             </div>
         </div>
-        <div class="list" v-show="false">
+        <div class="list" v-show="maskShow" >
             <div class="header">
                 <span class="cartText">购物车</span>
-                <span class="clear" >清空</span>
+                <span class="clear" @click='clear'>清空</span>
             </div>
-            <div class="content">
-                <ul>
-                    <li class="item">
-                        <span class="left"> 1 </span>
+            <div class="content" ref='carlist'>
+                <ul ref='cailistul' @click='ulclick'>
+                    <li class="item" v-for='(item,index) in selectName' :key='index'>
+                        <span class="left" > {{item.name}} </span>
                         <div class="right">
-                            <span class="price">1</span>
-                            
+                            <span class="price">￥{{item.price}}</span>
+                            <v-contorl :index1='item.index1' :index2='item.index2' :food='item.food'></v-contorl>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="mask" v-show="false" ></div>
+        <div class="mask" v-show="maskShow" @click='maskShow=!maskShow'></div>
     </div>
 </template>
 
 <script >
+  import Vue from 'vue'
+  import contorl from '../v-contorl/contorl'
+  import BScroll from 'better-scroll'
   export default {
     data () {
       return {
+          maskShow:false,
 
       }
     },
     components: {
+        "v-contorl":contorl,
+    },
+    computed:{  
+        
+        sumCount(){
+            return this.goods.reduce((total,item)=>{
+                item.foods.forEach((food)=>{
+                    if(food.count){
+                        total+=food.count
+                    }
+                })
+                
+                return total
+                
+            },0)
+        },
+        sumMoeny(){
+             return this.goods.reduce((total,item)=>{
+                item.foods.forEach((food)=>{
+                    if(food.count){
+                        total+=food.count*food.price
+                    }
+                })
+                
+                return total
+                
+            },0)
+        },
+        deliveryPrice(){
+            return this.$store.state.seller.deliveryPrice;
+        },
+        minPrice(){
+            return this.$store.state.seller.minPrice;
+        },
+        selectName(){
+             return this.goods.reduce((total,item,index1)=>{
+                item.foods.forEach((food,index2)=>{
+                    if(food.count){
+                        total.push({name:food.name,price:food.price,index1,index2,food})
+                    }
+                })
+                
+                return total
+                
+            },[])
+        },
+       
 
+    },
+    props:{
+        goods:Array
+    },
+    mounted(){
+        new BScroll(this.$refs.carlist)
+    },
+    methods:{
+        clear(){
+            this.$bus.$emit('clear')
+            this.maskShow=!this.maskShow;
+        },
+        ulclick(){
+            setTimeout(() => {
+                if(this.$refs.cailistul&&this.$refs.cailistul.offsetHeight===0){
+                this.maskShow=!this.maskShow;
+            }
+            }, 0);
+        }
     }
   }
 </script>
@@ -58,7 +130,7 @@
     .cart
         flex 0 0 0;
         position fixed
-        z-index 3
+        z-index 12
         bottom 0
         left 0
         height 46px
@@ -103,10 +175,13 @@
                     height 16px
                     line-height 16px
                     border-radius 6px
-                    background red
+                    background rgba(255,255,255,0.4)
                     font-size 9px
                     font-weight 700
                     text-align center
+                    &.active
+                        background red
+                    
             .totalPrice
                 display flex
                 justify-content center
@@ -142,9 +217,10 @@
             span
                 color rgba(255,255,255,0.6)
     .list
+        margin 0
         max-height 255px
         position fixed
-        z-index 2
+        z-index 11
         left 0
         bottom 45px
         width 100%
@@ -172,12 +248,16 @@
             max-height 195px
             overflow hidden
             .item
+                margin 6 18px
+                
+                 
                 one-px(rgba(7,17,27,.1))
                 display flex
                 height 48px
                 align-items center
                 justify-content space-between
                 .left
+                    color black
                     padding-left 18px
                 .right
                     display flex
@@ -190,7 +270,7 @@
                         font-weight 700
     .mask
         position fixed
-        z-index 1
+        z-index 10
         left 0
         right 0
         top 0
