@@ -71,8 +71,8 @@ const ACTSETGOODS='actSetGoods'
      async mounted(){
         let resulte=await this.$http.seller.getGoods()
         this[ACTSETGOODS](resulte.data);
-        this.typeScrollObj=new BScroll(this.$refs.typeWrap)
-        this.goodScrollObj=new BScroll(this.$refs.goodWrap,{probeType:3})
+        this.typeScrollObj=new BScroll(this.$refs.typeWrap,{probeType:3,click:true})
+        this.goodScrollObj=new BScroll(this.$refs.goodWrap,{probeType:3,click:true})
         this.goodScrollObj.on("scroll",({x,y})=>{
                             this.scrollY = Math.abs(y)
                         })

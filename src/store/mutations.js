@@ -1,5 +1,5 @@
 import store from "."
-import {GETGOODS,GETRATINGS,GETSELLER} from './mutations_type'
+import {GETGOODS,GETRATINGS,GETSELLER,GETADDRESS} from './mutations_type'
 export default{
     [GETSELLER](state,val){
         state.seller=val;
@@ -10,5 +10,7 @@ export default{
     [GETRATINGS](state,val){
         state.ratings=val;
     },
-
+    [GETADDRESS](state,val){
+        state.addressObj=val;
+    },
 }

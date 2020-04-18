@@ -10,7 +10,7 @@ export default function (axios,config={}){
 
     for(let apiname in api){
         
-        let {url,method,isparams,params,isform,toast,hooks}=api[apiname];
+        let {url,method,isparams,params,isform,toast,hooks,corsUrl}=api[apiname];
 
         httpObj[apiname]=async (data={})=>{
             let resulte;
@@ -27,6 +27,10 @@ export default function (axios,config={}){
                 data=params
             }
            try {
+               if(corsUrl){
+                url=corsUrl+url
+                corsUrl=''
+               }
                toast && loading();
                hooks && hooks.beforeReq();
             switch (method) {

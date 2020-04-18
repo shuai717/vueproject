@@ -1,4 +1,4 @@
-import {GETGOODS,GETRATINGS,GETSELLER} from './mutations_type'
+import {GETGOODS,GETRATINGS,GETSELLER,GETADDRESS} from './mutations_type'
 export default{
     actSetSeller(store,val){
         store.commit(GETSELLER,val)
@@ -8,5 +8,8 @@ export default{
     },
     actSetRatings(store,val){
         store.commit(GETRATINGS,val)
+    },
+    actSetAddress(store,val){
+        store.commit(GETADDRESS,val)
     },
 }
